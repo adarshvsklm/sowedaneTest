@@ -16,12 +16,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setOtp } from '../../Redux/Authentication/auth';
 import axios from 'axios';
 import { serverUrl } from '../../serverUrl';
+import {useNavigate} from 'react-router-dom'
 
 export default function SignUp() {
   const [form, setForm] = useState({});
   const dispatch = useDispatch();
   const { otp, open, verified } = useSelector((state) => state.otp);
   const [validEmail, setValidEmail] = useState();
+  const navigate = useNavigate()
 
   handleValidation(form);
 
@@ -111,6 +113,7 @@ export default function SignUp() {
           Submit
         </Button>
       )}
+      <small style={{cursor:'pointer',color:'blue'}} onClick={()=>{navigate('/login')}}>Already have an account ? Click here to login .</small>
     </Box>
   );
 }

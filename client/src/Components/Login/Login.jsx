@@ -79,6 +79,7 @@ function Login() {
         >
           Submit
         </Button>
+        <small style={{color:'blue',cursor:'pointer'}} onClick={()=>{navigate('/signup')}}> Don't Have an accoun ? Click Here to Signup</small>
       </Box>
     </div>
   );

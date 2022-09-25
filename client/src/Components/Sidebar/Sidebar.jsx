@@ -18,6 +18,13 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import axios from 'axios';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { serverUrl } from '../../serverUrl';
+
+import { useDispatch } from 'react-redux';
+import { setUserDetails } from '../../Redux/UserSlice/UserSlice';
+ import {useNavigate} from 'react-router-dom'
 
 const drawerWidth = 240;
 
@@ -86,17 +93,35 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
+///////////////
+
+
+
 export default function Sidebar({children}) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-
+  
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+
+ const handleLogout = () => {
+  axios.get(`${serverUrl}/logout`,{withCredentials: true})
+  .then((res)=>{
+    navigate('/login')
+  })
+  .catch((err)=>{
+    console.log(err)
+ })
+ }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -116,7 +141,7 @@ export default function Sidebar({children}) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            
+            <small style={{cursor:'pointer'}} onClick={()=>{navigate('/profile/edit')}}>Edit Profile</small>
           </Typography>
         </Toolbar>
       </AppBar>
@@ -143,8 +168,8 @@ export default function Sidebar({children}) {
                     mr: open ? 3 : 'auto',
                     justifyContent: 'center',
                   }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                > 
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
@@ -153,8 +178,8 @@ export default function Sidebar({children}) {
         </List>
         <Divider />
         <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+          
+            <ListItem   disablePadding sx={{ display: 'block' }} onClick={handleLogout}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -169,12 +194,12 @@ export default function Sidebar({children}) {
                     justifyContent: 'center',
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                   <LogoutIcon />
                 </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
-          ))}
+          
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

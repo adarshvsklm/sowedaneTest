@@ -78,8 +78,8 @@ export const sentOtp = (req, res) => {
 export const verifyLogin = (req, res) => {
   if (otp == req.body.otp) {
     console.log(req.body);
-    let otpKey = generateOTP(4)
-    req.session.otpKey = otpKey
+    let otpKey = generateOTP(4);
+    req.session.otpKey = otpKey;
     res.status(200).json({ message: 'Verified', otpKey });
   } else {
     res.status(404).json(err);
@@ -88,12 +88,12 @@ export const verifyLogin = (req, res) => {
 
 export const verifyOtp = (req, res) => {
   if (otp == req.body.otp) {
-    console.log(req.body)
-    let otpKey = generateOTP(4)
-    req.session.otpKey = otpKey
+    console.log(req.body);
+    let otpKey = generateOTP(4);
+    req.session.otpKey = otpKey;
     res.status(200).json({ message: 'Verified', otpKey });
   } else {
-    req.session.user=null
+    req.session.user = null;
     res.status(404).json(err);
   }
 };
@@ -117,3 +117,45 @@ export const login = asyncHandler(async (req, res, next) => {
     res.status(401).json({ message: 'Login Failed' });
   }
 });
+
+export const UserData = (req, res) => {
+  try {
+    User.find({ _id: req.session.user._id })
+      .then((response) => {
+        console.log(response);
+        res
+          .status(200)
+          .json({ name: response[0].name, email: response[0].email });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.json(err);
+      });
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+export const updateProfile = (req, res) => {
+  try {
+    User.updateOne(
+      { _id: req.session.user._id },
+      { $set: { name: req.body.name } }
+    ).then((response) => {
+      res.status(200).json({ message: 'Success' });
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
+  }
+};
+
+export const logout = (req, res) => {
+  try {
+    req.session.user = null;
+    res.status(200).json({ message: 'success' });
+  } catch (err) {
+    console.log(err)
+    res.status(500).json(err);
+  }
+};
