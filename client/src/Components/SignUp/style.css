@@ -1,0 +1,13 @@
+.verify {
+    margin: 0;
+    padding: 0;
+    float: right;
+    cursor: pointer;
+}
+
+.verified {
+    margin: 0;
+    padding: 0;
+    float: right;
+    color:green;
+}
