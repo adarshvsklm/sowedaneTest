@@ -10,6 +10,15 @@ function Otp() {
   const [error, setError] = useState();
   const navigate= useNavigate()
 
+
+    axios.get(`${serverUrl}/login/check`,{withCredentials:true})
+  .then((res)=>{
+    navigate('/')
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
+
   const handleSubmit = () => {
     axios
       .post(`${serverUrl}/login/verify`, { otp }, { withCredentials: true })

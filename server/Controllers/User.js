@@ -98,7 +98,22 @@ export const verifyOtp = (req, res) => {
   }
 };
 
+export const LoginverifyOtp = (req, res) => {
+  if (otp == req.body.otp) {
+    console.log(req.body);
+    req.session.user = req.session.temp
+    req.session.temp=null
+    let otpKey = generateOTP(4);
+    req.session.otpKey = otpKey;
+    res.status(200).json({ message: 'Verified', otpKey });
+  } else {
+    req.session.user = null;
+    res.status(404).json(err);
+  }
+};
+
 export const login = asyncHandler(async (req, res, next) => {
+ try{
   const user = await User.findOne({
     email: req.body.email,
   });
@@ -110,12 +125,15 @@ export const login = asyncHandler(async (req, res, next) => {
   const isUserValid = await bcrypt.compare(req.body.password, user.password);
   console.log(isUserValid);
   if (isUserValid) {
-    req.session.user = user;
+    req.session.temp = user;
     res.status(200).json({ message: 'Success' });
   } else {
     req.session.user = null;
     res.status(401).json({ message: 'Login Failed' });
   }
+ }catch(err){
+  console.log(err);
+ }
 });
 
 export const UserData = (req, res) => {
@@ -155,7 +173,7 @@ export const logout = (req, res) => {
     req.session.user = null;
     res.status(200).json({ message: 'success' });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json(err);
   }
 };
